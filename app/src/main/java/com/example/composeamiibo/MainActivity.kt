@@ -33,7 +33,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        var amiibos: ArrayList<Amiibo> = ArrayList<Amiibo>()
+        var amiibos: ArrayList<Amiibo>
         val repository = Repository()
         val viewModelFactory = MainViewModelFactory(repository)
         viewModel = ViewModelProvider(this,viewModelFactory).get(MainViewModel::class.java)
@@ -73,10 +73,10 @@ fun ActivityContent(amiibos:ArrayList<Amiibo>) {
         verticalArrangement = Arrangement.spacedBy(8.dp),
 
     ){
-        itemsIndexed(amiibos){index, item ->  
+        itemsIndexed(amiibos){_, item ->
             Card(modifier = Modifier
                 .fillMaxSize(),
-                shape = RoundedCornerShape(8.dp),
+                shape = RoundedCornerShape(8.dp)
 
                 )
             {
@@ -106,6 +106,36 @@ fun ActivityContent(amiibos:ArrayList<Amiibo>) {
 @Composable
 fun DefaultPreview() {
     ComposeAmiiboTheme {
+        Surface(color = MaterialTheme.colors.background) {
+            LazyColumn(modifier = Modifier.fillMaxSize()){
+                items(count=10){
+                    Card(modifier = Modifier
+                        .fillMaxSize(),
+                        shape = RoundedCornerShape(8.dp)
 
+                    )
+                    {
+                        Row(){
+                            Column() {
+                                Image(
+                                    painter = rememberImagePainter(it.toString()),
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .size(64.dp)
+                                        .padding(8.dp)
+                                )
+                            }
+                            Column() {
+                                Text("Hello")
+                                Text("world")
+                                Text("how are you")
+                            }
+                        }
+
+                    }
+
+                }
+            }
+        }
     }
 }
