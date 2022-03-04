@@ -12,19 +12,19 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.focusModifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
-import com.example.composeamiibo.api.RetrofitInstance
 import com.example.composeamiibo.model.Amiibo
 import com.example.composeamiibo.ui.theme.ComposeAmiiboTheme
-import com.example.myapplication.MainViewModel
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
+
+
 
 class AmiiboViewer : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,29 +32,29 @@ class AmiiboViewer : ComponentActivity() {
         setContent {
             ComposeAmiiboTheme {
                 // A surface container using the 'background' color from the theme
-                var bundle:Bundle? = intent.extras?.getBundle("sel_item")
-                var encAmiibo: String? = bundle?.getString("sel_item")
+                var bundle: Bundle? = intent.extras?.getBundle(SEL_ITEM_KEY)
+                var encAmiibo: String? = bundle?.getString(SEL_ITEM_KEY)
                 var amiibo: Amiibo? = encAmiibo?.let { Json.decodeFromString(it) }
 
                 Scaffold(
                     topBar = {
-                        TopAppBar(title ={
+                        TopAppBar(title = {
                             if (amiibo != null) {
-                                Text( amiibo.name)
+                                Text(amiibo.name)
                             }
                         },
-                        navigationIcon = {
-                            Icon(
-                                imageVector = Icons.Filled.ArrowBack,
-                                contentDescription = "Back",
-                                modifier = Modifier
-                                    .clickable{
-                                        this.finish()
-                                    }
+                            navigationIcon = {
+                                Icon(
+                                    imageVector = Icons.Filled.ArrowBack,
+                                    contentDescription = getString(R.string.back),
+                                    modifier = Modifier
+                                        .clickable {
+                                            this.finish()
+                                        }
 
-                            )
-                        }
-                            )
+                                )
+                            }
+                        )
                     }
 
                 ) {
@@ -74,49 +74,57 @@ class AmiiboViewer : ComponentActivity() {
 }
 
 @Composable
-fun ViewAmiibo(amiibo: Amiibo){
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .background(MaterialTheme.colors.background)
+fun ViewAmiibo(amiibo: Amiibo) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colors.background)
     ) {
-        Image(painter= rememberImagePainter(amiibo.image),
-        contentDescription = "",
-            modifier= Modifier
+        Image(
+            painter = rememberImagePainter(amiibo.image),
+            contentDescription = "",
+            modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight(fraction = .5.toFloat())
                 .padding(8.dp)
         )
-        Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-            HeaderText("Ammibo Information")
-            RowData("Amiibo Series", amiibo.amiiboSeries)
-            RowData("Game Series", amiibo.gameSeries)
-            Header2Text("Release Dates:")
-            RowData("Austrailia",
-            if(amiibo.release.au != null){
-                amiibo.release.au.toString()
-            }else{
-                "Unavailable"
-            }
-                )
-            RowData("Europe",
-                if(amiibo.release.eu != null){
+        Column(modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)) {
+            HeaderText(stringResource(R.string.amiibo_view_header))
+            RowData(stringResource(R.string.amiibo_series_label), amiibo.amiiboSeries)
+            RowData(stringResource(R.string.amiibo_game_series_label), amiibo.gameSeries)
+            Header2Text(stringResource(R.string.amiibo_release_dates_header))
+            RowData(
+                stringResource(R.string.amiibo_release_australia_label),
+                if (amiibo.release.au != null) {
+                    amiibo.release.au.toString()
+                } else {
+                    stringResource(R.string.unavailable)
+                }
+            )
+            RowData(
+                stringResource(R.string.amiibo_release_europe_label),
+                if (amiibo.release.eu != null) {
                     amiibo.release.eu.toString()
-                }else{
-                    "Unavailable"
+                } else {
+                    stringResource(R.string.unavailable)
                 }
             )
-            RowData("Japan",
-                if(amiibo.release.jp != null){
+            RowData(
+                stringResource(R.string.amiibo_release_japan_label),
+                if (amiibo.release.jp != null) {
                     amiibo.release.jp.toString()
-                }else{
-                    "Unavailable"
+                } else {
+                    stringResource(R.string.unavailable)
                 }
             )
-            RowData("North America",
-                if(amiibo.release.na != null){
+            RowData(
+                stringResource(R.string.amiibo_release_northamerica_label),
+                if (amiibo.release.na != null) {
                     amiibo.release.na.toString()
-                }else{
-                    "Unavailable"
+                } else {
+                    stringResource(R.string.unavailable)
                 }
             )
         }
@@ -125,7 +133,7 @@ fun ViewAmiibo(amiibo: Amiibo){
 }
 
 @Composable
-fun RowData(label:String, value:String){
+fun RowData(label: String, value: String) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -139,13 +147,13 @@ fun RowData(label:String, value:String){
 }
 
 @Composable
-fun HeaderText(text:String){
-    Text(text,fontWeight=FontWeight.Bold, fontSize=24.sp)
+fun HeaderText(text: String) {
+    Text(text, fontWeight = FontWeight.Bold, fontSize = 24.sp)
 }
 
 @Composable
-fun Header2Text(text:String){
-    Text(text,fontWeight=FontWeight.Bold, fontSize=18.sp)
+fun Header2Text(text: String) {
+    Text(text, fontWeight = FontWeight.Bold, fontSize = 18.sp)
 }
 
 @Preview(showBackground = true)

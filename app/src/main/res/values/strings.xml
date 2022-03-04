@@ -1,4 +1,15 @@
 <resources>
     <string name="app_name">Compose Amiibo</string>
     <string name="title_activity_amiibo_viewer">AmiiboViewer</string>
+    <string name="back">Back</string>
+    <string name="amiibo_view_header">Ammibo Information</string>
+    <string name="amiibo_series_label">Amiibo Series</string>
+    <string name="amiibo_game_series_label">Game Series</string>
+    <string name="amiibo_release_dates_header">Release Dates:</string>
+    <string name="amiibo_release_australia_label">Australia</string>
+    <string name="unavailable">Unavailable</string>
+    <string name="amiibo_release_europe_label">Europe</string>
+    <string name="amiibo_release_japan_label">Japan</string>
+    <string name="amiibo_release_northamerica_label">North America</string>
+    <string name="log_response_label">Response</string>
 </resources>

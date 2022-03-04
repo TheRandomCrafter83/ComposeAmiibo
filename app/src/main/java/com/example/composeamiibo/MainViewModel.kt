@@ -1,4 +1,4 @@
-package com.example.myapplication
+package com.example.composeamiibo
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

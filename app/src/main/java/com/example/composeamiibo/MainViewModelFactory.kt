@@ -1,4 +1,4 @@
-package com.example.myapplication
+package com.example.composeamiibo
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
