@@ -18,6 +18,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
+import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.example.composeamiibo.model.Amiibo
 import com.example.composeamiibo.model.Root
@@ -58,7 +59,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalCoilApi::class)
 @Composable
 fun ActivityContent(amiibos: ArrayList<Amiibo>) {
     val context: Context = LocalContext.current
@@ -80,8 +81,8 @@ fun ActivityContent(amiibos: ArrayList<Amiibo>) {
 
             )
             {
-                Row() {
-                    Column() {
+                Row {
+                    Column {
                         Image(
                             painter = rememberImagePainter(item.image),
                             contentDescription = null,
@@ -90,7 +91,7 @@ fun ActivityContent(amiibos: ArrayList<Amiibo>) {
                                 .padding(8.dp)
                         )
                     }
-                    Column() {
+                    Column {
                         Text(item.character)
                         Text(item.amiiboSeries)
                         Text(item.gameSeries)
@@ -103,16 +104,17 @@ fun ActivityContent(amiibos: ArrayList<Amiibo>) {
 }
 
 fun showViewAmiibo(context: Context, amiibo: Amiibo) {
-    var bundle: Bundle = Bundle()
-    var encAmiibo: String = Json.encodeToString(amiibo)
+    val bundle = Bundle()
+    val encAmiibo: String = Json.encodeToString(amiibo)
     bundle.putString(SEL_ITEM_KEY, encAmiibo)
-    var intent: Intent = Intent(context, AmiiboViewer::class.java)
+    val intent = Intent(context, AmiiboViewer::class.java)
     intent.action = Intent.ACTION_VIEW
 
     intent.putExtra(SEL_ITEM_KEY, bundle)
     context.startActivity(intent)
 }
 
+@OptIn(ExperimentalCoilApi::class)
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
@@ -127,8 +129,8 @@ fun DefaultPreview() {
 
                     )
                     {
-                        Row() {
-                            Column() {
+                        Row {
+                            Column {
                                 Image(
                                     painter = rememberImagePainter(it.toString()),
                                     contentDescription = null,
@@ -137,7 +139,7 @@ fun DefaultPreview() {
                                         .padding(8.dp)
                                 )
                             }
-                            Column() {
+                            Column {
                                 Text("Hello")
                                 Text("world")
                                 Text("how are you")

@@ -18,6 +18,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.example.composeamiibo.model.Amiibo
 import com.example.composeamiibo.ui.theme.ComposeAmiiboTheme
@@ -32,9 +33,9 @@ class AmiiboViewer : ComponentActivity() {
         setContent {
             ComposeAmiiboTheme {
                 // A surface container using the 'background' color from the theme
-                var bundle: Bundle? = intent.extras?.getBundle(SEL_ITEM_KEY)
-                var encAmiibo: String? = bundle?.getString(SEL_ITEM_KEY)
-                var amiibo: Amiibo? = encAmiibo?.let { Json.decodeFromString(it) }
+                val bundle: Bundle? = intent.extras?.getBundle(SEL_ITEM_KEY)
+                val encAmiibo: String? = bundle?.getString(SEL_ITEM_KEY)
+                val amiibo: Amiibo? = encAmiibo?.let { Json.decodeFromString(it) }
 
                 Scaffold(
                     topBar = {
@@ -73,6 +74,7 @@ class AmiiboViewer : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalCoilApi::class)
 @Composable
 fun ViewAmiibo(amiibo: Amiibo) {
     Column(
