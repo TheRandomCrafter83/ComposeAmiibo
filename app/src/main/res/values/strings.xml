@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Compose Amiibo</string>
+    <string name="title_activity_amiibo_viewer">AmiiboViewer</string>
 </resources>

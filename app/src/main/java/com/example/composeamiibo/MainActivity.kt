@@ -1,5 +1,7 @@
 package com.example.composeamiibo
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -9,13 +11,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusModifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
@@ -26,6 +26,8 @@ import com.example.composeamiibo.repository.Repository
 import com.example.composeamiibo.ui.theme.ComposeAmiiboTheme
 import com.example.myapplication.MainViewModel
 import com.example.myapplication.MainViewModelFactory
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 class MainActivity : ComponentActivity() {
 
@@ -38,11 +40,11 @@ class MainActivity : ComponentActivity() {
         val viewModelFactory = MainViewModelFactory(repository)
         viewModel = ViewModelProvider(this,viewModelFactory).get(MainViewModel::class.java)
         viewModel.getAmiibo()
-        viewModel.myResponse.observe(this, { response->
-            if(response.isSuccessful){
+        viewModel.myResponse.observe(this) { response ->
+            if (response.isSuccessful) {
                 val root: Root? = response.body()
                 if (root != null) {
-                    Log.d("Response",root.toString())
+                    Log.d("Response", root.toString())
                     amiibos = root.amiibo
 
 
@@ -57,16 +59,17 @@ class MainActivity : ComponentActivity() {
                     }
 
 
-
                 }
             }
-        })
+        }
 
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ActivityContent(amiibos:ArrayList<Amiibo>) {
+    val context: Context = LocalContext.current
     LazyColumn(modifier = Modifier
         .fillMaxSize()
         .padding(8.dp),
@@ -76,7 +79,11 @@ fun ActivityContent(amiibos:ArrayList<Amiibo>) {
         itemsIndexed(amiibos){_, item ->
             Card(modifier = Modifier
                 .fillMaxSize(),
-                shape = RoundedCornerShape(8.dp)
+                shape = RoundedCornerShape(8.dp),
+                onClick = {
+                    showViewAmiibo(context, item)
+
+                }
 
                 )
             {
@@ -100,6 +107,17 @@ fun ActivityContent(amiibos:ArrayList<Amiibo>) {
             }
         }
     }
+}
+
+fun showViewAmiibo(context: Context, amiibo: Amiibo){
+    var bundle: Bundle = Bundle()
+    var encAmiibo: String = Json.encodeToString(amiibo)
+    bundle.putString("sel_item",encAmiibo)
+    var intent: Intent = Intent(context, AmiiboViewer::class.java)
+    intent.action = Intent.ACTION_VIEW
+
+    intent.putExtra("sel_item",bundle)
+    context.startActivity(intent)
 }
 
 @Preview(showBackground = true)
