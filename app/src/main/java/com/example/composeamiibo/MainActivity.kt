@@ -30,7 +30,7 @@ import com.example.composeamiibo.ui.theme.ComposeAmiiboTheme
 import com.example.composeamiibo.ui.theme.ListBackground
 import kotlinx.serialization.json.JsonNull.content
 
-private lateinit var viewModel: MainViewModel
+lateinit var viewModel: MainViewModel
 
 class MainActivity : ComponentActivity() {
 

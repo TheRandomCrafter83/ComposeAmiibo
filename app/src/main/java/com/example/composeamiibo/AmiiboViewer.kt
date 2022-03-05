@@ -32,10 +32,7 @@ class AmiiboViewer : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ComposeAmiiboTheme {
-                // A surface container using the 'background' color from the theme
-                val bundle: Bundle? = intent.extras?.getBundle(SEL_ITEM_KEY)
-                val encAmiibo: String? = bundle?.getString(SEL_ITEM_KEY)
-                val amiibo: Amiibo? = encAmiibo?.let { Json.decodeFromString(it) }
+                val amiibo: Amiibo? = viewModel.selectedAmiibo
 
                 Scaffold(
                     topBar = {
