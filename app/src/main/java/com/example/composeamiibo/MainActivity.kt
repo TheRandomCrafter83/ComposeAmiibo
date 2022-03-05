@@ -28,7 +28,6 @@ import com.example.composeamiibo.model.Root
 import com.example.composeamiibo.repository.Repository
 import com.example.composeamiibo.ui.theme.ComposeAmiiboTheme
 import com.example.composeamiibo.ui.theme.ListBackground
-import kotlinx.serialization.json.JsonNull.content
 
 lateinit var viewModel: MainViewModel
 
@@ -38,8 +37,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         var amiibos: ArrayList<Amiibo>
         val repository = Repository()
-        val viewModelFactory = MainViewModelFactory(repository)
-        viewModel = ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
+        val viewModelFactory = MainViewModelFactory(repository, application)
+        viewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
         viewModel.getAmiibo()
         viewModel.myResponse.observe(this) { response ->
             if (response.isSuccessful) {
@@ -85,7 +84,7 @@ fun ActivityContent(amiibos: ArrayList<Amiibo>) {
                         .fillMaxSize(),
                         shape = RoundedCornerShape(8.dp),
                         onClick = {
-                            viewModel.showViewAmiibo(context, item)
+                            viewModel.recyclerViewSelectedCardClick(item)
                         }
                     )
                     {
