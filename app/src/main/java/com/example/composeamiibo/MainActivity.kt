@@ -1,12 +1,12 @@
 package com.example.composeamiibo
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -14,7 +14,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
@@ -24,12 +27,12 @@ import com.example.composeamiibo.model.Amiibo
 import com.example.composeamiibo.model.Root
 import com.example.composeamiibo.repository.Repository
 import com.example.composeamiibo.ui.theme.ComposeAmiiboTheme
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
+import com.example.composeamiibo.ui.theme.ListBackground
+import kotlinx.serialization.json.JsonNull.content
+
+private lateinit var viewModel: MainViewModel
 
 class MainActivity : ComponentActivity() {
-
-    private lateinit var viewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,7 +50,7 @@ class MainActivity : ComponentActivity() {
                     setContent {
                         ComposeAmiiboTheme {
                             // A surface container using the 'background' color from the theme
-                            Surface(color = MaterialTheme.colors.background) {
+                            Surface(color = ListBackground) {
                                 ActivityContent(amiibos)
                             }
                         }
@@ -63,56 +66,72 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun ActivityContent(amiibos: ArrayList<Amiibo>) {
     val context: Context = LocalContext.current
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+    Scaffold(
+        modifier= Modifier
+            .background(Color.Transparent)
+            .fillMaxSize(),
+        backgroundColor = ListBackground,
+        content = {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(8.dp)
+                    .background(ListBackground),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
 
-        ) {
-        itemsIndexed(amiibos) { _, item ->
-            Card(modifier = Modifier
-                .fillMaxSize(),
-                shape = RoundedCornerShape(8.dp),
-                onClick = {
-                    showViewAmiibo(context, item)
-
-                }
-
-            )
-            {
-                Row {
-                    Column {
-                        Image(
-                            painter = rememberImagePainter(item.image),
-                            contentDescription = null,
+                ) {
+                itemsIndexed(amiibos) { _, item ->
+                    Card(modifier = Modifier
+                        .fillMaxSize(),
+                        shape = RoundedCornerShape(8.dp),
+                        onClick = {
+                            viewModel.showViewAmiibo(context, item)
+                        }
+                    )
+                    {
+                        Row(
                             modifier = Modifier
-                                .size(64.dp)
-                                .padding(8.dp)
-                        )
-                    }
-                    Column {
-                        Text(item.character)
-                        Text(item.amiiboSeries)
-                        Text(item.gameSeries)
+                                .padding(16.dp)
+                        ) {
+                            Column {
+                                Image(
+                                    painter = rememberImagePainter(item.image),
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .size(64.dp)
+                                        .padding(8.dp)
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(16.dp))
+                            Column {
+                                Header2Text(item.character)
+                                Text(item.amiiboSeries)
+                                Text(item.gameSeries)
+                            }
+                        }
+
                     }
                 }
-
             }
-        }
-    }
+        },
+        topBar = {
+        TopAppBar(title = {
+            Spacer(modifier = Modifier.width(16.dp))
+            Text("Amiibo Rest Api Example")
+        },
+            navigationIcon = {
+                Spacer(modifier = Modifier.width(16.dp))
+                Image(
+                    painterResource(R.drawable.amiibo_logo),
+                    contentScale = ContentScale.Inside,
+                    contentDescription = "Amiibo Rest Api Example",
+                )
+                Spacer(modifier = Modifier.width(16.dp))
+            }
+        )
+    })
 }
 
-fun showViewAmiibo(context: Context, amiibo: Amiibo) {
-    val bundle = Bundle()
-    val encAmiibo: String = Json.encodeToString(amiibo)
-    bundle.putString(SEL_ITEM_KEY, encAmiibo)
-    val intent = Intent(context, AmiiboViewer::class.java)
-    intent.action = Intent.ACTION_VIEW
-
-    intent.putExtra(SEL_ITEM_KEY, bundle)
-    context.startActivity(intent)
-}
 
 @OptIn(ExperimentalCoilApi::class)
 @Preview(showBackground = true)

@@ -148,15 +148,7 @@ fun RowData(label: String, value: String) {
     }
 }
 
-@Composable
-fun HeaderText(text: String) {
-    Text(text, fontWeight = FontWeight.Bold, fontSize = 24.sp)
-}
 
-@Composable
-fun Header2Text(text: String) {
-    Text(text, fontWeight = FontWeight.Bold, fontSize = 18.sp)
-}
 
 @Preview(showBackground = true)
 @Composable
