@@ -12,4 +12,5 @@
     <string name="amiibo_release_japan_label">Japan</string>
     <string name="amiibo_release_northamerica_label">North America</string>
     <string name="log_response_label">Response</string>
+    <string name="share">Share</string>
 </resources>

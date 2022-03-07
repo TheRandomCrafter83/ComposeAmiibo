@@ -1,6 +1,7 @@
 package com.example.composeamiibo
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -13,19 +14,14 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.example.composeamiibo.model.Amiibo
 import com.example.composeamiibo.ui.theme.ComposeAmiiboTheme
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
-
-
+import com.example.composeamiibo.util.Util
 
 class AmiiboViewer : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,23 +29,27 @@ class AmiiboViewer : ComponentActivity() {
         setContent {
             ComposeAmiiboTheme {
                 val amiibo: Amiibo? = viewModel.selectedAmiibo
-
+                val amiiboName: String = "" + amiibo?.name
                 Scaffold(
                     topBar = {
-                        TopAppBar(title = {
-                            if (amiibo != null) {
-                                Text(amiibo.name)
-                            }
-                        },
+                        TopAppBar(
+                            title = {Text(amiiboName)},
                             navigationIcon = {
                                 Icon(
                                     imageVector = Icons.Filled.ArrowBack,
                                     contentDescription = getString(R.string.back),
                                     modifier = Modifier
+                                        .clickable { this.finish() }
+                                )
+                            },
+                            actions = {
+                                MenuAction(R.drawable.ic_share,
+                                    R.string.share,
+                                    modifier=Modifier
                                         .clickable {
-                                            this.finish()
+                                            Toast.makeText(applicationContext,"Hello", Toast.LENGTH_SHORT).show()
+                                            Util.shareAmiibo(viewModel.selectedAmiibo)
                                         }
-
                                 )
                             }
                         )
@@ -142,26 +142,5 @@ fun RowData(label: String, value: String) {
             text = value, modifier = Modifier
                 .weight(1f), textAlign = TextAlign.End
         )
-    }
-}
-
-
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview2() {
-    ComposeAmiiboTheme {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colors.background
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colors.background)
-            ) {
-
-            }
-        }
     }
 }
