@@ -122,7 +122,6 @@ fun ActivityContent(amiibos: ArrayList<Amiibo>) {
                                             contentDescription = null,
                                             modifier = Modifier
                                                 .size(64.dp)
-                                                .padding(8.dp)
                                                 .clip(CircleShape)
                                                 .background(MaterialTheme.colors.secondary)
 
