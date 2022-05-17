@@ -4,22 +4,22 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.*
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.annotation.ExperimentalCoilApi
-import coil.compose.rememberImagePainter
-import coil.size.OriginalSize
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
+import coil.size.Size
 import com.example.composeamiibo.model.Amiibo
 import com.example.composeamiibo.ui.theme.ComposeAmiiboTheme
 import com.example.composeamiibo.util.Util
@@ -29,8 +29,8 @@ class AmiiboViewer : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ComposeAmiiboTheme {
-                val amiibo: Amiibo? = viewModel.selectedAmiibo
-                val amiiboName: String = "" + amiibo?.name
+                val amiibo: Amiibo = viewModel.selectedAmiibo
+                val amiiboName: String = "" + amiibo.name
                 Scaffold(
                     topBar = {
                         TopAppBar(
@@ -61,9 +61,7 @@ class AmiiboViewer : ComponentActivity() {
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colors.background
                     ) {
-                        if (amiibo != null) {
-                            ViewAmiibo(amiibo = amiibo)
-                        }
+                        ViewAmiibo(amiibo = amiibo)
                     }
                 }
 
@@ -72,7 +70,6 @@ class AmiiboViewer : ComponentActivity() {
     }
 }
 
-@OptIn(ExperimentalCoilApi::class)
 @Composable
 fun ViewAmiibo(amiibo: Amiibo) {
     Column(
@@ -82,9 +79,11 @@ fun ViewAmiibo(amiibo: Amiibo) {
             .background(MaterialTheme.colors.background)
     ) {
         Image(
-            painter = rememberImagePainter(amiibo.image,builder = {
-                size(OriginalSize)
-            }),
+            painter = rememberAsyncImagePainter(
+                ImageRequest.Builder(LocalContext.current).data(amiibo.image).apply(block = fun ImageRequest.Builder.() {
+                    size(Size.ORIGINAL)
+                }).build()
+            ),
             contentDescription = "",
             modifier = Modifier
                 .fillMaxWidth()

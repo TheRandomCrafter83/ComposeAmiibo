@@ -1,13 +1,11 @@
 package com.example.composeamiibo
 
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -25,8 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelProvider
-import coil.annotation.ExperimentalCoilApi
-import coil.compose.rememberImagePainter
+import coil.compose.rememberAsyncImagePainter
 import com.example.composeamiibo.model.Amiibo
 import com.example.composeamiibo.model.AmiiboDatabase
 import com.example.composeamiibo.repository.Repository
@@ -64,10 +61,11 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalCoilApi::class)
+
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ActivityContent(amiibos: ArrayList<Amiibo>) {
-    val context: Context = LocalContext.current
+    LocalContext.current
     Scaffold(
         modifier= Modifier
             .background(Color.Transparent)
@@ -118,7 +116,7 @@ fun ActivityContent(amiibos: ArrayList<Amiibo>) {
                                     ) {
 
                                         Image(
-                                            painter = rememberImagePainter(item.image),
+                                            painter = rememberAsyncImagePainter(item.image),
                                             contentDescription = null,
                                             modifier = Modifier
                                                 .size(64.dp)
@@ -161,8 +159,6 @@ fun ActivityContent(amiibos: ArrayList<Amiibo>) {
     })
 }
 
-
-@OptIn(ExperimentalCoilApi::class)
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
@@ -180,7 +176,7 @@ fun DefaultPreview() {
                         Row {
                             Column {
                                 Image(
-                                    painter = rememberImagePainter(it.toString()),
+                                    painter = rememberAsyncImagePainter(it.toString()),
                                     contentDescription = null,
                                     modifier = Modifier
                                         .size(64.dp)
